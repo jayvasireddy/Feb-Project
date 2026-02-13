@@ -7,6 +7,7 @@ function selectOption(option) {
         // Flash rainbow colors
         flashRainbowColors(function() {
             document.getElementById('question').style.display = 'none'; // Hide the question
+            document.getElementById('love-message').style.display = 'block'; // <-- added this
             displayCatHeart(); // Display the cat-heart.gif
         });
     } else if (option === 'no') {

@@ -19,6 +19,15 @@ body {
     /* This container will hold the images */
 }
 
+
+#love-message{
+  display: none;                 /* hidden until Yes */
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 52px;
+  margin-bottom: 10px;           /* spacing above the gif */
+  color: #FB607F;                /* matches your button pink */
+}
+
 #question {
     font-size: 52px; /* Set font size for the question */
     font-weight: 600;
