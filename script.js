@@ -1,7 +1,7 @@
 // script.js
 
 var noClickCount = 0;
-var noButtonLabels = ['No', 'You sure?', 'Really sure?', 'Think again?', 'Please?'];
+var noButtonLabels = ['No', 'You sure?', 'Try again?', 'Huh?', 'What the hell?'];
 
 // Function to handle button click events
 function selectOption(option) {
