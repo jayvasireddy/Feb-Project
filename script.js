@@ -1,81 +1,106 @@
 // script.js
 
+var noClickCount = 0;
+var noButtonLabels = ['No', 'You sure?', 'Really sure?', 'Think again?', 'Please?'];
+
 // Function to handle button click events
 function selectOption(option) {
-    // Check which option was clicked
     if (option === 'yes') {
-        // Flash rainbow colors
-        flashRainbowColors(function() {
-            document.getElementById('question').style.display = 'none'; // Hide the question
-            document.getElementById('love-message').style.display = 'block'; // <-- added this
-            displayCatHeart(); // Display the cat-heart.gif
-        });
+        document.getElementById('question').style.display = 'none';
+        document.getElementById('love-message').style.display = 'block';
+        displayCatHeart();
     } else if (option === 'no') {
-        // Change text on the "No" button to "You sure?"
-        document.getElementById('no-button').innerText = 'You sure?'; 
-        // Increase font size of "Yes" button
-        var yesButton = document.getElementById('yes-button');
-        var currentFontSize = window.getComputedStyle(yesButton).getPropertyValue('font-size');
-        var newSize = parseFloat(currentFontSize) * 2; // Increase font size by  * 2px
-        yesButton.style.fontSize = newSize + 'px';
+        handleNoInteraction();
     } else {
-        // If neither "Yes" nor "No" was clicked, show an alert message
         alert('Invalid option!');
     }
 }
 
-// Function to flash rainbow colors and then execute a callback function
-function flashRainbowColors(callback) {
-    var colors = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3'];
-    var i = 0;
-    var interval = setInterval(function() {
-        document.body.style.backgroundColor = colors[i];
-        i = (i + 1) % colors.length;
-    }, 200); // Change color every 200 milliseconds
-    setTimeout(function() {
-        clearInterval(interval);
-        document.body.style.backgroundColor = ''; // Reset background color
-        if (callback) {
-            callback();
-        }
-    }, 2000); // Flash colors for 2 seconds
+function handleNoInteraction() {
+    var noButton = document.getElementById('no-button');
+
+    noClickCount += 1;
+    var labelIndex = Math.min(noClickCount, noButtonLabels.length - 1);
+    noButton.innerText = noButtonLabels[labelIndex];
+
+    moveNoButtonRandomly(noButton);
 }
 
-// Function to display the cat.gif initially
+function moveNoButtonRandomly(noButton) {
+    noButton.classList.add('escape');
+
+    var buttonRect = noButton.getBoundingClientRect();
+    var margin = 12;
+    var maxX = Math.max(margin, window.innerWidth - buttonRect.width - margin);
+    var maxY = Math.max(margin, window.innerHeight - buttonRect.height - margin);
+
+    var x = randomInt(margin, Math.floor(maxX));
+    var y = randomInt(margin, Math.floor(maxY));
+
+    noButton.style.left = x + 'px';
+    noButton.style.top = y + 'px';
+}
+
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function setupNoButtonBehavior() {
+    var noButton = document.getElementById('no-button');
+
+    noButton.addEventListener('mouseenter', function() {
+        handleNoInteraction();
+    });
+
+    // Touch fallback where hover is not available.
+    noButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        handleNoInteraction();
+    });
+}
+
+// Function to display the before-click image initially
 function displayCat() {
-    // Get the container where the image will be displayed
     var imageContainer = document.getElementById('image-container');
-    // Create a new Image element for the cat
-    var catImage = new Image();
-    // Set the source (file path) for the cat image
-    catImage.src = 'cat.gif'; // Assuming the cat image is named "cat.gif"
-    // Set alternative text for the image (for accessibility)
-    catImage.alt = 'Cat';
-    // When the cat image is fully loaded, add it to the image container
-    catImage.onload = function() {
-        imageContainer.appendChild(catImage);
-    };
+
+    imageContainer.innerHTML = '';
+    imageContainer.classList.remove('after-state');
+
+    var beforeImage = new Image();
+    beforeImage.src = 'before_click.jpg';
+    beforeImage.alt = 'Before click photo';
+    beforeImage.className = 'before-image';
+
+    imageContainer.appendChild(beforeImage);
 }
 
 // Function to display the cat-heart.gif
 function displayCatHeart() {
-    // Clear existing content in the image container
-    document.getElementById('image-container').innerHTML = '';
-    // Get the container where the image will be displayed
     var imageContainer = document.getElementById('image-container');
-    // Create a new Image element for the cat-heart
+
+    imageContainer.innerHTML = '';
+    imageContainer.classList.add('after-state');
+
+    var gallery = document.createElement('div');
+    gallery.className = 'after-gallery';
+
     var catHeartImage = new Image();
-    // Set the source (file path) for the cat-heart image
-    catHeartImage.src = 'cat-heart.gif'; // Assuming the cat-heart image is named "cat-heart.gif"
-    // Set alternative text for the image (for accessibility)
+    catHeartImage.src = 'cat-heart.gif';
     catHeartImage.alt = 'Cat Heart';
-    // When the cat-heart image is fully loaded, add it to the image container
-    catHeartImage.onload = function() {
-        imageContainer.appendChild(catHeartImage);
-        // Hide the options container
-        document.getElementById('options').style.display = 'none';
-    };
+    catHeartImage.className = 'after-media cat-heart-media';
+
+    var afterClickImage = new Image();
+    afterClickImage.src = 'after_click.JPG';
+    afterClickImage.alt = 'After click photo';
+    afterClickImage.className = 'after-media after-click-media';
+
+    gallery.appendChild(catHeartImage);
+    gallery.appendChild(afterClickImage);
+    imageContainer.appendChild(gallery);
+
+    document.getElementById('options').style.display = 'none';
 }
 
-// Display the cat.gif initially
+// Display the before-click image initially
 displayCat();
+setupNoButtonBehavior();
